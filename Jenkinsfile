@@ -3,7 +3,7 @@ pipeline {
         kubernetes {
             cloud "minikube"
             label "shell"
-            defaultContainer "shell"
+            defaultContainer "node"
             yaml """
 apiVersion: v1
 kind: Pod
@@ -38,19 +38,19 @@ spec:
     stages {
         stage('Checkout Code') {
             steps {
-                container('shell') {
+             
                     checkout scm
-                }
+                
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                container('node') {
+             
                     sh '''
                     npm install
                     '''
-                }
+                
             }
         }
 
