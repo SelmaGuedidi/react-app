@@ -1,3 +1,4 @@
+@Library('my-shared-library@main') _
 pipeline {
     agent {
         kubernetes {
@@ -14,15 +15,36 @@ spec:
     command:
     - cat
     tty: true
+    resources:
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+      requests:
+        memory: "500Mi"
+        cpu: "500m"
   - name: node
     image: node:18-alpine
     command:
     - cat
     tty: true
+    resources:
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+      requests:
+        memory: "500Mi"
+        cpu: "500m"
   - name: dind
     image: docker:24.0.1-dind
     securityContext:
       privileged: true
+    resources:
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+      requests:
+        memory: "500Mi"
+        cpu: "500m"
   volumes:
   - name: docker-graph-storage
     emptyDir: {}
@@ -77,16 +99,18 @@ spec:
             }
         }
 
+        stage('Build Docker Image') {
+            steps {
+                container('shell') {
+                    buildDockerImage(DOCKER_IMAGE)
+                }
+            }
+        }
+
         stage('Tag and Push Docker Image') {
             steps {
                 container('shell') {
-                    script {
-                        sh '''
-                        echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                        docker tag $DOCKER_IMAGE $DOCKERHUB_REPO:latest
-                        docker push $DOCKERHUB_REPO:latest
-                        '''
-                    }
+                    pushDockerImage(DOCKER_IMAGE, DOCKERHUB_REPO)
                 }
             }
         }
@@ -94,21 +118,7 @@ spec:
         stage('Deploy to Minikube') {
             steps {
                 container('shell') {
-                    sh '''
-                    kubectl apply -f k8s/deployment.yaml
-                    kubectl apply -f k8s/service.yaml
-                    '''
-                }
-            }
-        }
-
-        stage('Verify Deployment') {
-            steps {
-                container('shell') {
-                    sh '''
-                    kubectl rollout status deployment/react-app-deployment
-                    kubectl get pods
-                    '''
+                    deployToKubernetes('k8s/deployment.yaml', 'k8s/service.yaml')
                 }
             }
         }
