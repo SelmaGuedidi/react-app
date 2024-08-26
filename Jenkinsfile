@@ -10,6 +10,11 @@ kind: Pod
 spec:
   containers:
   - name: shell
+    image: docker:24.0.1
+    command:
+    - cat
+    tty: true
+  - name: node
     image: node:18-alpine
     command:
     - cat
@@ -41,7 +46,7 @@ spec:
 
         stage('Install Dependencies') {
             steps {
-                container('shell') {
+                container('node') {
                     sh '''
                     npm install
                     '''
@@ -51,7 +56,7 @@ spec:
 
         stage('Build React App') {
             steps {
-                container('shell') {
+                container('node') {
                     sh '''
                     npm run build
                     '''
