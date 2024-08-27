@@ -21,19 +21,6 @@ spec:
         requests:
             memory: "500Mi"
             cpu: "500m"
-  - name: node
-    image: node:18-alpine
-    command:
-    - cat
-    tty: true
-    resources:
-      limits:
-        memory: "2Gi"
-        cpu: "1000m"
-      requests:
-        memory: "500Mi"
-        cpu: "500m"
- 
   volumes:
   - name: docker-graph-storage
     emptyDir: {}
