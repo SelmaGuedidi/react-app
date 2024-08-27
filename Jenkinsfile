@@ -58,47 +58,8 @@ spec:
         DOCKERHUB_REPO = "selmaguedidi/react-app"
     }
     stages {
-        stage('Checkout Code') {
-            steps {
-             
-                    checkout scm
-                
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-             
-                    sh '''
-                    npm install
-                    '''
-                
-            }
-        }
-
-        stage('Build React App') {
-            steps {
-                container('node') {
-                    sh '''
-                    npm run build
-                    '''
-                }
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                container('shell') {
-                    script {
-                        sh 'docker info'
-                        sh '''
-                        docker build -t $DOCKER_IMAGE .
-                        '''
-                    }
-                }
-            }
-        }
-
+        
+        
         stage('Build Docker Image') {
             steps {
                 container('shell') {
