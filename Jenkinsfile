@@ -11,17 +11,16 @@ kind: Pod
 spec:
   containers:
   - name: shell
-    image: docker:24.0.1
-    command:
-    - cat
+    image: docker:27.1.2
+    command: ['cat']
     tty: true
     resources:
-      limits:
-        memory: "2Gi"
-        cpu: "1000m"
-      requests:
-        memory: "500Mi"
-        cpu: "500m"
+        limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        requests:
+            memory: "500Mi"
+            cpu: "500m"
   - name: node
     image: node:18-alpine
     command:
@@ -34,17 +33,7 @@ spec:
       requests:
         memory: "500Mi"
         cpu: "500m"
-  - name: dind
-    image: docker:24.0.1-dind
-    securityContext:
-      privileged: true
-    resources:
-      limits:
-        memory: "2Gi"
-        cpu: "1000m"
-      requests:
-        memory: "500Mi"
-        cpu: "500m"
+ 
   volumes:
   - name: docker-graph-storage
     emptyDir: {}
