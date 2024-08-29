@@ -68,7 +68,7 @@ spec:
         stage('Deploy to Minikube') {
             steps {
                 container('kubectl') {
-                    deployToKubernetes('k8s/deployment.yaml', 'k8s/service.yaml', 'react-app-service' , '3000', '3000' )
+                    deployToKubernetes('k8s/deployment.yaml', 'k8s/service.yaml', 'react-app-service' , '80', '3000' )
                 }
             }
         }
