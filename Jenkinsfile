@@ -3,41 +3,8 @@ pipeline {
     agent {
         kubernetes {
             cloud "minikube"
-            label "shell"
-            defaultContainer "shell"
-            yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: kubectl
-    image: bitnami/kubectl:latest
-    command:
-      - "/bin/sh"
-      - "-c"
-      - "sleep 99d"
-    tty: true
-    securityContext:
-      runAsUser: 0
-  - name: dind
-    image: docker:27.1.2
-    command: ['cat']
-    tty: true
-    resources:
-        limits:
-            memory: "2Gi"
-            cpu: "1000m"
-        requests:
-            memory: "500Mi"
-            cpu: "500m"
-    volumeMounts:
-    - name: dockersock
-      mountPath: /var/run/docker.sock
-  volumes:
-  - name: dockersock
-    hostPath:
-      path: /var/run/docker.sock
-"""
+            yamlFile "agents/pod-template.yaml"
+            
         }
     }
     environment {
